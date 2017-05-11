@@ -15,15 +15,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project3D", "Project3D\Proj
 		{AF59BB0B-E059-4773-83DC-728A949647DA} = {AF59BB0B-E059-4773-83DC-728A949647DA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2017_0313_Asteroids2DBootstrap V0", "..\2017_0313_AsteroidEscape_V1\2017_0313_test2Dproj.vcxproj", "{DEA49362-B428-4215-8D64-4EA0B4FF0858}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DSpherePlatformer", "..\2017_04_28 3DSpherePlatformer\3DSpherePlatformer.vcxproj", "{56972E97-6612-4EBB-837D-2F1BED8694F7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Solar", "..\2017_0410_SolarSystem\Solar.vcxproj", "{C36DCBF2-ED8C-44E4-AADC-6A182192F212}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TankGame", "..\2017_05_01 TankMatrixGame\SceneGraph\SceneGraph.vcxproj", "{AA16D0D6-B732-4181-A528-72315040201D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DSpherePlatformer", "..\..\2017_04_28_MatrixHierarchyDemoAndFramework\2017_04_28 3DSpherePlatformer\3DSpherePlatformer.vcxproj", "{56972E97-6612-4EBB-837D-2F1BED8694F7}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TankGame", "..\..\2017_04_28_MatrixHierarchyDemoAndFramework\2017_05_01 TankMatrixGame\SceneGraph\SceneGraph.vcxproj", "{AA16D0D6-B732-4181-A528-72315040201D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DTestingGrounds", "3DTestingGrounds\3DTestingGrounds.vcxproj", "{BC809834-BF5E-455C-BA6C-6239F1271291}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DTestingGrounds", "3DTestingGrounds\3DTestingGrounds.vcxproj", "{DEA49362-B428-4215-8D64-4EA0B4FF0858}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,14 +39,6 @@ Global
 		{EA21C4DF-E331-4FCF-8513-14A3F56B77F3}.Debug|x86.Build.0 = Debug|Win32
 		{EA21C4DF-E331-4FCF-8513-14A3F56B77F3}.Release|x86.ActiveCfg = Release|Win32
 		{EA21C4DF-E331-4FCF-8513-14A3F56B77F3}.Release|x86.Build.0 = Release|Win32
-		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Debug|x86.ActiveCfg = Debug|Win32
-		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Debug|x86.Build.0 = Debug|Win32
-		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Release|x86.ActiveCfg = Release|Win32
-		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Release|x86.Build.0 = Release|Win32
-		{C36DCBF2-ED8C-44E4-AADC-6A182192F212}.Debug|x86.ActiveCfg = Debug|Win32
-		{C36DCBF2-ED8C-44E4-AADC-6A182192F212}.Debug|x86.Build.0 = Debug|Win32
-		{C36DCBF2-ED8C-44E4-AADC-6A182192F212}.Release|x86.ActiveCfg = Release|Win32
-		{C36DCBF2-ED8C-44E4-AADC-6A182192F212}.Release|x86.Build.0 = Release|Win32
 		{56972E97-6612-4EBB-837D-2F1BED8694F7}.Debug|x86.ActiveCfg = Debug|Win32
 		{56972E97-6612-4EBB-837D-2F1BED8694F7}.Debug|x86.Build.0 = Debug|Win32
 		{56972E97-6612-4EBB-837D-2F1BED8694F7}.Release|x86.ActiveCfg = Release|Win32
@@ -59,10 +47,10 @@ Global
 		{AA16D0D6-B732-4181-A528-72315040201D}.Debug|x86.Build.0 = Debug|Win32
 		{AA16D0D6-B732-4181-A528-72315040201D}.Release|x86.ActiveCfg = Release|Win32
 		{AA16D0D6-B732-4181-A528-72315040201D}.Release|x86.Build.0 = Release|Win32
-		{BC809834-BF5E-455C-BA6C-6239F1271291}.Debug|x86.ActiveCfg = Debug|Win32
-		{BC809834-BF5E-455C-BA6C-6239F1271291}.Debug|x86.Build.0 = Debug|Win32
-		{BC809834-BF5E-455C-BA6C-6239F1271291}.Release|x86.ActiveCfg = Release|Win32
-		{BC809834-BF5E-455C-BA6C-6239F1271291}.Release|x86.Build.0 = Release|Win32
+		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Debug|x86.ActiveCfg = Debug|Win32
+		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Debug|x86.Build.0 = Debug|Win32
+		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Release|x86.ActiveCfg = Release|Win32
+		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
