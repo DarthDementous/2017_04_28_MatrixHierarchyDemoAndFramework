@@ -1,7 +1,6 @@
 #include "_3DTestingGroundsApp.h"
 #include "Gizmos.h"
 #include "Input.h"
-#include <Vector2.h>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <GLFW/glfw3.h>
@@ -34,12 +33,13 @@ bool _3DTestingGroundsApp::startup() {
 	//cameraViewMatrix = Matrix4::createLookAt(Vector4(10), Vector4(0), Vector4(0, 1, 0, 0));
 	// Set initial mouse state
 	aie::Input* input = aie::Input::getInstance();
+	
+	// Give the camera a perspective lens (frustum to cuboid)
+	cameraProjectionMatrix.convertFromOpenGL(glm::perspectiveFov(degToRad(45.f), (float)getWindowWidth(), (float)getWindowHeight(), 1.f, 1000.f));
+
+	m_camera = new CameraNode(cameraRotSpeed, cameraProjectionMatrix, cameraReference);
 
 	originalMouseState = Vector2<int>((int)getWindowWidth() / 2, (int)getWindowHeight() / 2);
-
-	// Give the camera a perspective lens (frustum to cuboid)
-	//cameraProjectionMatrix = Matrix4::createPerspective(glm::pi<float>() * 0.25f, 16.f / 9.f, 0.1f, 1000.f);
-	cameraProjectionMatrix.convertFromOpenGL(glm::perspectiveFov(degToRad(45.f), (float)getWindowWidth(), (float)getWindowHeight(), 1.f, 1000.f));
 
 	return true;
 }
@@ -68,8 +68,11 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 	// add default transform lines for world axis
 	Gizmos::addTransform(mat4(1));
 
+	aie::Input* input = aie::Input::getInstance();
+	
 	// Update with mouse input
-	MouseInput(deltaTime);
+	//m_camera->UpdateInput(input, originalMouseState, deltaTime);
+	//MouseInput(deltaTime);
 
 	// Hide the mouse cursor
 	glfwSetInputMode(getWindowPtr(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -78,11 +81,9 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 	glfwSetCursorPos(getWindowPtr(), originalMouseState.x, originalMouseState.y);
 
 	// Update camera after getting new mouse input
-	UpdateViewMatrix(deltaTime);
+	//m_camera->UpdateView(playerPosition);
 
 	// quit if we press escape
-	aie::Input* input = aie::Input::getInstance();
-
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 }
@@ -132,15 +133,15 @@ void _3DTestingGroundsApp::UpdateViewMatrix(float deltaTime)
 	//cameraPitch -= cameraRotSpeed * deltaTime;
 	//cameraYaw -= cameraRotSpeed * deltaTime;
 	// Pitch and yaw camera
-	cameraRotationMatrix = Matrix4::createRotationX(cameraPitch) * Matrix4::createRotationY(cameraYaw);
-	// Transform camera's position relative to its ROTATION
-	cameraTransformedPosition = cameraRotationMatrix * cameraReference;
-	//// Add the player's POSITION to the camera's position
-	//cameraTransformedPosition += playerPosition;
-	// Transform camera up normal by camera rotation
-	cameraUp = cameraRotationMatrix * Vector4(0, 1, 0, 0);
-	// Construct the camera view matrix
-	cameraViewMatrix = Matrix4::createLookAt(cameraTransformedPosition, playerPosition, cameraUp);
+	//cameraRotationMatrix = Matrix4::createRotationX(cameraPitch) * Matrix4::createRotationY(cameraYaw);
+	//// Transform camera's position relative to its ROTATION
+	//cameraTransformedPosition = cameraRotationMatrix * cameraReference;
+	////// Add the player's POSITION to the camera's position
+	////cameraTransformedPosition += playerPosition;
+	//// Transform camera up normal by camera rotation
+	//cameraUp = cameraRotationMatrix * Vector4(0, 1, 0, 0);
+	//// Construct the camera view matrix
+	//cameraViewMatrix = Matrix4::createLookAt(cameraTransformedPosition, playerPosition, cameraUp);
 	//cameraProjectionMatrix.convertFromOpenGL(glm::perspectiveFov(degToRad(45.f), (float)getWindowWidth(), (float)getWindowHeight(), 1.f, 1000.f));
 }
 
@@ -149,6 +150,7 @@ void _3DTestingGroundsApp::draw() {
 	// wipe the screen to the background colour
 	clearScreen();
 	// Draw gizmos transformed to the camera
-	Gizmos::draw(cameraProjectionMatrix.convertToOpenGL() * cameraViewMatrix.convertToOpenGL());
+	//Gizmos::draw(m_camera->GetObjectTransform().convertToOpenGL());
+	//Gizmos::draw(cameraProjectionMatrix.convertToOpenGL() * cameraViewMatrix.convertToOpenGL());
 	//Gizmos::draw(cameraProjectionMatrix.convertToOpenGL() * m_viewMatrix);
 }

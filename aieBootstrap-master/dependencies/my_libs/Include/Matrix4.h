@@ -11,7 +11,7 @@ public:
 	///Constructors
 	Matrix4();
 
-	Matrix4(Matrix4 &a_rhs);                      //Copy constructor, copy information from Matrix into the other
+	Matrix4(const Matrix4 &a_rhs);                      //Copy constructor, copy information from Matrix into the other
 
 	Matrix4(T *a_ptr);                          //Construct from list of floats
 
@@ -59,7 +59,10 @@ public:
 	static Matrix4 createRotationZ(float a_rot);                         //Return rotated Matrix4
 
 	static Matrix4 createScale(T a_xScale, T a_yScale, T a_zScale);           //Return scaled Matrix4
-																						  ///Setters
+	
+	static Matrix4 createTranslation(T a_transX, T a_transY, T a_transZ);
+
+	///Setters
 	void set(T a_m11, T a_m12, T a_m13, T a_m14,
 		T a_m21, T a_m22, T a_m23, T a_m24,
 		T a_m31, T a_m32, T a_m33, T a_m34,
@@ -77,9 +80,11 @@ public:
 
 	void setTranslate(T a_transX, T a_transY, T a_transZ);
 
-	Vector4<T> getTranslation();
+	Vector4<T> getTranslation() const;
 
-	T getRotation(char a_axis);
+	Vector4<T> getRotation();
+
+	Vector4<T> getScale() const;
 
 	glm::mat4x4 convertToOpenGL();   // Allow math's library structures to be used in Bootstrap functions
 
