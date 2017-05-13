@@ -24,6 +24,9 @@
     <ClCompile Include="CameraNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GizmoNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dependencies\my_libs\Include\Node.h">
@@ -33,6 +36,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\dependencies\my_libs\Include\CameraNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dependencies\my_libs\Include\NodeFramework_DLL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dependencies\my_libs\Include\GizmoNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

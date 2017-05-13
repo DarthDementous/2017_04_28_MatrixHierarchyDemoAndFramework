@@ -1,13 +1,14 @@
 #pragma once
 #include <Node.h>
 #include <Vector2.h>
+#include <GLFW/glfw3.h>
 
 namespace aie {
 	class Input;
 }
 
 
-class CameraNode :
+class NODE_LIBRARY_API CameraNode :
 	public Node
 {
 public:
@@ -42,6 +43,10 @@ public:
 	*
 	*/
 	Matrix4<float> GetObjectTransform();
+	
+	void Update(GLFWwindow* a_window, float a_dt, aie::Input* a_input, Vector2<int> a_originalMouseState, Vector4<float> a_target);
+
+	void Render();
 private:
 	float m_cameraYaw		= 0.f;				///< Turning left and right on Y axis
 	float m_cameraPitch		= 0.f;				///< Angling up and down on X axis

@@ -11,20 +11,27 @@ Node::~Node()
 {
 
 }
+#pragma region Virtual functions
 
 void Node::Update(float dt)
 {
 
 }
 
-void Node::Render(aie::Renderer2D *renderer)
+void Node::Render()
 {
-	// DEBUG RENDERING
-	// TODO: Put condition in to toggle debug rendering for basic nodes
-	Matrix4<float> gTransform = GetTransform(WORLD);
-	Vector3<float> pos = Vector3<float>(gTransform.getTranslation().x, gTransform.getTranslation().y, gTransform.getTranslation().z);
 
-	//renderer->drawBox(pos.x, pos.y, 10, 20, rot);
+}
+#pragma endregion
+
+#pragma region Family functions
+
+void Node::AttachParent(Node * a_parent)
+{
+	// Child accepts change in relationship
+	m_parent = a_parent;
+	// Parent accepts change in relationship
+	a_parent->m_children.push_back(this);
 }
 
 void Node::Adopt(Node * a_child)
@@ -34,6 +41,17 @@ void Node::Adopt(Node * a_child)
 	// Parent accepts change in relationship
 	m_children.push_back(a_child);
 }
+void Node::Orphan()
+{
+	// Parent accepts change in relationship
+	auto iter = std::find(m_parent->m_children.begin(), m_parent->m_children.end(), this);		// Get iterator position of this node so we can remove it from the parent's vector
+	m_parent->m_children.erase(iter);
+	// Child accepts orphaning
+	m_parent = nullptr;
+}
+#pragma endregion
+
+#pragma region Coordinate Functions
 
 Matrix4<float> Node::GetTransform(eCoordType a_coordType) const
 {
@@ -79,35 +97,81 @@ Vector4<float> Node::GetScale(eCoordType a_coordType) const
 	return (m_parent->GetTransform(WORLD) * m_localTransform).getScale();
 }
 
+void Node::SetTranslate(eCoordType a_coordType, const Vector4<float>& a_trans)
+{
+	if (a_coordType == LOCAL || m_parent == nullptr) {
+		// We want to replace only the translation part of the Matrix.
+		m_localTransform.setTranslate(a_trans.x, a_trans.y, a_trans.z);
+		return;
+	}
+
+	// De-couple with parent by negating the parent transformation
+	Vector4<float> worldTranslate = m_parent->GetTransform(WORLD).getTranslation();
+	m_localTransform.setTranslate(a_trans.x - worldTranslate.x, a_trans.y - worldTranslate.y, a_trans.z - worldTranslate.z);
+}
+
 void Node::Translate(eCoordType a_coordType, const Vector4<float>& a_pos)
 {
-	// *= operator so we add on the translation instead of setting it
-	m_localTransform *= Matrix4<float>::createTranslation(a_pos.x, a_pos.y, a_pos.z);
-	// TODO:
-	// Figure out how to globally translate according to parent
-	if (a_coordType == WORLD && m_parent != nullptr) {
-		m_localTransform *= m_parent->GetTransform(WORLD);
+	if (a_coordType == LOCAL || m_parent == nullptr) {
+		// *= operator so we add on the translation instead of setting it
+		m_localTransform *= Matrix4<float>::createTranslation(a_pos.x, a_pos.y, a_pos.z);
 	}
+
+	// De-couple with parent by negating the parent transformation
+	Vector4<float> worldTranslate = m_parent->GetTransform(WORLD).getTranslation();
+	m_localTransform *= Matrix4<float>::createTranslation(a_pos.x - worldTranslate.x, a_pos.y - worldTranslate.y, a_pos.z - worldTranslate.z);
+}
+
+void Node::SetRotate(eCoordType a_coordType, const Vector4<float>& a_rot)
+{
+	if (a_coordType == LOCAL || m_parent == nullptr) {
+		// We want to replace only the rotation parts
+		m_localTransform.setRotateX(a_rot.x), m_localTransform.setRotateY(a_rot.y), m_localTransform.setRotateZ(a_rot.z);
+	}
+
+	// De-couple with parent by negating the parent transformation
+	Vector4<float> worldRotate = m_parent->GetTransform(WORLD).getRotation();
+	m_localTransform.setRotateX(a_rot.x - worldRotate.x), m_localTransform.setRotateY(a_rot.y - worldRotate.y), m_localTransform.setRotateZ(a_rot.z - worldRotate.z);
 }
 
 void Node::Rotate(eCoordType a_coordType, const Vector4<float>& a_rot)
 {
-	// *= operator so we add on the rotations instead of setting it
-	m_localTransform *= (Matrix4<float>::createRotationX(a_rot.x) * Matrix4<float>::createRotationY(a_rot.y) * Matrix4<float>::createRotationZ(a_rot.z));
-	// TODO:
-	// Figure out how to globally rotate according to parent
-	if (a_coordType == WORLD && m_parent != nullptr) {
-		m_localTransform *= m_parent->GetTransform(WORLD);
+	if (a_coordType == LOCAL || m_parent == nullptr) {
+		// *= operator so we add on the translation instead of setting it
+		m_localTransform *= 
+			Matrix4<float>::createRotationX(a_rot.x) * 
+			Matrix4<float>::createRotationY(a_rot.y) * 
+			Matrix4<float>::createRotationZ(a_rot.z);
 	}
+
+	// De-couple with parent by negating the parent transformation
+	Vector4<float> worldRotate = m_parent->GetTransform(WORLD).getRotation();
+	m_localTransform *= 
+		Matrix4<float>::createRotationX(a_rot.x - worldRotate.x) * 
+		Matrix4<float>::createRotationY(a_rot.y - worldRotate.y) * 
+		Matrix4<float>::createRotationZ(a_rot.z - worldRotate.z);
+}
+
+void Node::SetScale(eCoordType a_coordType, const Vector4<float>& a_scale)
+{
+	if (a_coordType == LOCAL || m_parent == nullptr) {
+		m_localTransform = Matrix4<float>::createScale(a_scale.x, a_scale.y, a_scale.z);
+	}
+
+	// De-couple with parent by negating the parent transformation
+	Vector4<float> worldScale = m_parent->GetTransform(WORLD).getScale();
+	m_localTransform.setScale(a_scale.x - worldScale.x, a_scale.y - worldScale.y, a_scale.z - worldScale.z);
 }
 
 void Node::Scale(eCoordType a_coordType, Vector3<float> a_scale)
 {
-	// *= operator so we add on to the scale instead of setting it
-	m_localTransform *= Matrix4<float>::createScale(a_scale.x, a_scale.y, a_scale.z);
-	// TODO:
-	// Figure out how to globally scale according to parent
-	if (a_coordType == WORLD && m_parent != nullptr) {
-		m_localTransform *= m_parent->GetTransform(WORLD);
+	if (a_coordType == LOCAL || m_parent == nullptr) {
+		// *= operator so we add on to the scale instead of setting it
+		m_localTransform *= Matrix4<float>::createScale(a_scale.x, a_scale.y, a_scale.z);
 	}
+
+	// De-couple with parent by negating the parent transformation
+	Vector4<float> worldScale = m_parent->GetTransform(WORLD).getScale();
+	m_localTransform *= Matrix4<float>::createScale(a_scale.x - worldScale.x, a_scale.y - worldScale.y, a_scale.z - worldScale.z);
 }
+#pragma endregion

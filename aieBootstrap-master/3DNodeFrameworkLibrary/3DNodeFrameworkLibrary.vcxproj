@@ -71,14 +71,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)dependencies\my_libs\$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)dependencies\glm\;$(SolutionDir)bootstrap\;$(SolutionDir)dependencies\my_libs\Include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dependencies\glfw\include\;$(SolutionDir)dependencies\glm\;$(SolutionDir)bootstrap\;$(SolutionDir)dependencies\my_libs\Include\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)dependencies\my_libs\$(Configuration)\;$(SolutionDir)temp\bootstrap\$(Configuration);$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)_d</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)dependencies\my_libs\$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)dependencies\glm\;$(SolutionDir)bootstrap\;$(SolutionDir)dependencies\my_libs\Include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dependencies\glfw\include\;$(SolutionDir)dependencies\glm\;$(SolutionDir)bootstrap\;$(SolutionDir)dependencies\my_libs\Include\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)dependencies\my_libs\$(Configuration)\;$(SolutionDir)temp\bootstrap\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -87,7 +87,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS;_USRDLL;NODEFRAMEWORK_EXPORTS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,7 +114,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS;_USRDLL;NODEFRAMEWORK_EXPORTS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,12 +144,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CameraNode.cpp" />
+    <ClCompile Include="GizmoNode.cpp" />
     <ClCompile Include="Node.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dependencies\my_libs\Include\3DNodeFramework_Utility.h" />
     <ClInclude Include="..\dependencies\my_libs\Include\CameraNode.h" />
+    <ClInclude Include="..\dependencies\my_libs\Include\GizmoNode.h" />
     <ClInclude Include="..\dependencies\my_libs\Include\Node.h" />
+    <ClInclude Include="..\dependencies\my_libs\Include\NodeFramework_DLL.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

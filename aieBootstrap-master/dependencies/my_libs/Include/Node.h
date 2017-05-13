@@ -23,11 +23,12 @@
 *
 */
 
-#include "Matrix4.h"
-#include "Vector4.h"
-#include "Vector3.h"
+#include <Matrix4.h>
+#include <Vector4.h>
+#include <Vector3.h>
 #include <vector>
 #include <3DNodeFramework_Utility.h>
+#include <NodeFramework_DLL.h>
 
 namespace aie
 {
@@ -36,7 +37,7 @@ namespace aie
 /**
 *	@brief	Base-class that provides basic functionality for a Matrix Hierarchy system.
 */
-class Node
+class NODE_LIBRARY_API Node
 {
 public:
 	Node();
@@ -44,7 +45,7 @@ public:
 
 #pragma region Virtual functions
 	virtual void Update(float a_dt);
-	virtual void Render(aie::Renderer2D *a_renderer);
+	virtual void Render();
 #pragma endregion
 
 #pragma region Family functions
@@ -52,7 +53,7 @@ public:
 	/**
 	*	@brief	Couple a single parent to this
 	*/
-	void AttachParent(Node *a_parent)	{ m_parent = a_parent; }
+	void AttachParent(Node *a_parent);
 
 	/**
 	*	@brief	Couple child node to this.
@@ -62,7 +63,7 @@ public:
 	/**
 	*	@brief	De-couple the parent node from this.
 	*/
-	void Orphan()						{ m_parent = nullptr; }
+	void Orphan();
 #pragma endregion
 
 #pragma region Coordinate Functions
@@ -88,15 +89,30 @@ public:
 	Vector4<float> GetScale(eCoordType a_coordType) const;
 
 	/**
+	*	@brief	Set translation with specified Vector with LOCAL or WORLD consideration.
+	*/
+	void SetTranslate(eCoordType a_coordType, const Vector4<float> &a_trans);
+
+	/**
 	*	@brief	Add translation to this with LOCAL or WORLD consideration.
 	*/
 	void Translate(eCoordType a_coordType, const Vector4<float> &a_pos);
+
+	/**
+	*	@brief	Set rotation with specified Vector with LOCAL or WORLD consideration.
+	*/
+	void SetRotate(eCoordType a_coordType, const Vector4<float> &a_rot);
 
 	/**
 	*	@brief	Add rotation to this with LOCAL or WORLD consideration.
 	*/
 	void Rotate(eCoordType a_coordType, const Vector4<float> &a_rot);
 
+	/**
+	*	@brief	Set scale with specified Vector with LOCAL or WORLD consideration.
+	*/
+	void SetScale(eCoordType a_coordType, const Vector4<float> &a_scale);
+	
 	/**
 	*	@brief	Add scale to this with LOCAL or WORLD consideration.
 	*/

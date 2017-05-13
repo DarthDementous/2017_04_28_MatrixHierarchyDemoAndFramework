@@ -3,7 +3,6 @@
 #include "Input.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <GLFW/glfw3.h>
 #include <glm/vec3.hpp>
 
 using glm::vec3;
@@ -27,7 +26,7 @@ bool _3DTestingGroundsApp::startup() {
 	Gizmos::create(10000, 10000, 10000, 10000);
 
 	// create simple camera transforms
-	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
+	//m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
 	//m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.0f);
 	//cameraViewMatrix.convertFromOpenGL(glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0)));
 	//cameraViewMatrix = Matrix4::createLookAt(Vector4(10), Vector4(0), Vector4(0, 1, 0, 0));
@@ -46,13 +45,12 @@ bool _3DTestingGroundsApp::startup() {
 
 void _3DTestingGroundsApp::shutdown() {
 
-	Gizmos::destroy();
+
 }
 
 void _3DTestingGroundsApp::update(float deltaTime) {
 
-	// wipe the gizmos clean for this frame
-	Gizmos::clear();
+
 
 	// draw a simple grid with gizmos
 	vec4 white(1);
@@ -69,19 +67,7 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 	Gizmos::addTransform(mat4(1));
 
 	aie::Input* input = aie::Input::getInstance();
-	
-	// Update with mouse input
-	//m_camera->UpdateInput(input, originalMouseState, deltaTime);
-	//MouseInput(deltaTime);
 
-	// Hide the mouse cursor
-	glfwSetInputMode(getWindowPtr(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-	// Center cursor so we base camera rotations off of projected mouse movement instead of actual movement that could leave the window and cause extreme rotations
-	glfwSetCursorPos(getWindowPtr(), originalMouseState.x, originalMouseState.y);
-
-	// Update camera after getting new mouse input
-	//m_camera->UpdateView(playerPosition);
 
 	// quit if we press escape
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -150,7 +136,5 @@ void _3DTestingGroundsApp::draw() {
 	// wipe the screen to the background colour
 	clearScreen();
 	// Draw gizmos transformed to the camera
-	//Gizmos::draw(m_camera->GetObjectTransform().convertToOpenGL());
-	//Gizmos::draw(cameraProjectionMatrix.convertToOpenGL() * cameraViewMatrix.convertToOpenGL());
-	//Gizmos::draw(cameraProjectionMatrix.convertToOpenGL() * m_viewMatrix);
+	Gizmos::
 }

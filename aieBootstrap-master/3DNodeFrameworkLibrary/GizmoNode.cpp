@@ -1,6 +1,7 @@
 #include "SpriteNode.h"
 #include <Texture.h>
 #include <Renderer2D.h>
+#include "GizmoNode.h"
 
 SpriteNode::SpriteNode()
 {
@@ -54,4 +55,13 @@ void SpriteNode::SetOrigin(const Vector2<float>& origin)
 const Vector2<float>& SpriteNode::GetOrigin()
 {
 	return m_origin;
+}
+
+GizmoNode::GizmoNode()
+{
+}
+
+
+GizmoNode::~GizmoNode()
+{
 }
