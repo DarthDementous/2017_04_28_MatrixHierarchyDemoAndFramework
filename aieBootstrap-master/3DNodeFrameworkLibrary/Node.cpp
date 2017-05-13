@@ -1,16 +1,19 @@
 #include "Node.h"
-#include <Renderer2D.h>
 #include <glm/gtx/euler_angles.hpp>
+#include <iostream>
 
 Node::Node()
 {
-
+	std::cout << "hi" << std::endl;
 }
 
 Node::~Node()
 {
 
 }
+
+
+
 #pragma region Virtual functions
 
 void Node::Update(float dt)

@@ -1,10 +1,11 @@
 #include "CameraNode.h"
 #include <3DNodeFramework_Utility.h>
 #include <Input.h>
-#include <Gizmos.h>
 
 
-using aie::Gizmos;
+CameraNode::~CameraNode() {
+	//Gizmos::destroy;
+}
 
 void CameraNode::UpdateInput(aie::Input * a_input, const Vector2<int> &a_originalMouseState, float a_dt)
 {
@@ -88,6 +89,5 @@ void CameraNode::Render() {
 	/* Since Gizmos are a singleton class there's only one instance that's drawn as a batch.
 	With this draw function we simulate a Matrix Hierarchy, that is the Gizmos are 'children' of the grandparent class - CameraNode.
 	*/
-	
 	Gizmos::draw(GetObjectTransform().convertToOpenGL());			// Draw all Gizmos so they are transformed by the camera's viewport
 }

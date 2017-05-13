@@ -30,10 +30,6 @@
 #include <3DNodeFramework_Utility.h>
 #include <NodeFramework_DLL.h>
 
-namespace aie
-{
-	class Renderer2D;
-}
 /**
 *	@brief	Base-class that provides basic functionality for a Matrix Hierarchy system.
 */
@@ -44,7 +40,7 @@ public:
 	virtual ~Node();
 
 #pragma region Virtual functions
-	virtual void Update(float a_dt);
+	void Update(float a_dt);
 	virtual void Render();
 #pragma endregion
 
@@ -124,8 +120,7 @@ public:
 	void SetLocalMatrix(Matrix4<float> &a_localTransform) { m_localTransform = a_localTransform; }
 #pragma endregion
 protected:
-	Matrix4<float>			m_localTransform;	///< Local transformation matrix.
+	Matrix4<float>			m_localTransform;	/*Local transformation matrix*/
 	std::vector<Node*>		m_children;
 	Node*					m_parent = nullptr;
-private:
 };

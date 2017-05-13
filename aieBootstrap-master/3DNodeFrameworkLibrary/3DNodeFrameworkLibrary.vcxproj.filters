@@ -24,7 +24,10 @@
     <ClCompile Include="CameraNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GizmoNode.cpp">
+    <ClCompile Include="BoundingBoxNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\my_libs\Include\BoundingSphereNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -42,6 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\dependencies\my_libs\Include\GizmoNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dependencies\my_libs\Include\BoundingBoxNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dependencies\my_libs\Include\BoundingSphereNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

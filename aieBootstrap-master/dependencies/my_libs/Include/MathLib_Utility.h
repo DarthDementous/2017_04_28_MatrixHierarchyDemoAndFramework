@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DLL.h"
+#include <Vector4.h>
 
 #define _PI 3.14159265358979323846
 #define _2PI (_2PI*2)
@@ -10,7 +11,7 @@
 
 LIBRARY_API float degToRad(float degrees);
 LIBRARY_API float radToDeg(float radians);
-LIBRARY_API float LinearHalf(float x);
+LIBRARY_API Vector4<float> LinearHalf(Vector4<float> a_vec1, Vector4<float> a_vec2);
 
 //Assembly fsqrt 2 - Fastest square root method: https://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi
 ///DO NOT CHANGE DOUBLE TO FLOAT, ERRORS WILL OCCUR!

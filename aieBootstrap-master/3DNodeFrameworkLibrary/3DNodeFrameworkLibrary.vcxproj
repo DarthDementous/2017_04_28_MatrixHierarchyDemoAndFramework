@@ -143,16 +143,19 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\dependencies\my_libs\Include\BoundingSphereNode.cpp" />
+    <ClCompile Include="BoundingBoxNode.cpp" />
     <ClCompile Include="CameraNode.cpp" />
-    <ClCompile Include="GizmoNode.cpp" />
     <ClCompile Include="Node.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dependencies\my_libs\Include\3DNodeFramework_Utility.h" />
+    <ClInclude Include="..\dependencies\my_libs\Include\BoundingBoxNode.h" />
     <ClInclude Include="..\dependencies\my_libs\Include\CameraNode.h" />
     <ClInclude Include="..\dependencies\my_libs\Include\GizmoNode.h" />
     <ClInclude Include="..\dependencies\my_libs\Include\Node.h" />
     <ClInclude Include="..\dependencies\my_libs\Include\NodeFramework_DLL.h" />
+    <ClInclude Include="..\dependencies\my_libs\Include\BoundingSphereNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

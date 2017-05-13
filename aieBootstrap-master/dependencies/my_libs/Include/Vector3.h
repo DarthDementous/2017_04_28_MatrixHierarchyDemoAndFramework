@@ -1,6 +1,5 @@
 #pragma once
 
-#include <MathLib_Utility.h>
 #include <DLL.h>
 ///Vector3 = 2D Vector with no translation capabilities
 

@@ -22,8 +22,7 @@ _3DTestingGroundsApp::~_3DTestingGroundsApp() {
 bool _3DTestingGroundsApp::startup() {
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
-	// initialise gizmo primitive counts
-	Gizmos::create(10000, 10000, 10000, 10000);
+	Gizmos::create(1000, 1000, 1000, 1000);
 
 	// create simple camera transforms
 	//m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
@@ -44,13 +43,16 @@ bool _3DTestingGroundsApp::startup() {
 }
 
 void _3DTestingGroundsApp::shutdown() {
-
-
+	delete m_camera;
+	Gizmos::destroy();
 }
 
 void _3DTestingGroundsApp::update(float deltaTime) {
+	aie::Input* input = aie::Input::getInstance();
 
+	Gizmos::clear();
 
+	m_camera->Update(getWindowPtr(), deltaTime, input, originalMouseState, playerPosition);
 
 	// draw a simple grid with gizmos
 	vec4 white(1);
@@ -66,7 +68,6 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 	// add default transform lines for world axis
 	Gizmos::addTransform(mat4(1));
 
-	aie::Input* input = aie::Input::getInstance();
 
 
 	// quit if we press escape
@@ -136,5 +137,5 @@ void _3DTestingGroundsApp::draw() {
 	// wipe the screen to the background colour
 	clearScreen();
 	// Draw gizmos transformed to the camera
-	Gizmos::
+	m_camera->Render();
 }
