@@ -33,6 +33,29 @@ public:
 
 	~BoundingBoxNode();
 
+	/**
+	*	@brief	Basic collision check with another box.
+	*	@param	a_bb is the OBB or AABB that we are checking for possible collision with
+	*	@return	ENUM: DISJOINT, CONTAINS, INTERSECTS
+	*/
+	eContainmentType Collision(BoundingBoxNode *a_bb);
+
+	/**
+	*	@brief Basic collision check with a point
+	*	@param	a_pt is the point we are checking for possible collision with
+	*	@return ENUM: DISJOINT, CONTAINS, INTERSECTS
+	*/
+	eContainmentType Collision(const Vector4<float> &a_pt);
+
+	/**
+	*	@brief	More detailed collision detection, checks each face plane for intersection
+	*	@param	a_bb is the OBB or AABB that we are checking more detailed collision with
+	*	@return	Direction normal of face we are colliding with
+	*
+	*	WARNING: Expensive calculations
+	*/
+	Vector4<float> AdvancedIntersect(BoundingBoxNode *a_bb);
+
 	void Update();
 
 	void Render();
@@ -58,29 +81,6 @@ private:
 	*	@DEBUG	Render 2d bounding box outlines
 	*/
 	std::vector<Vector4<float>> CalculateFacePlanes();
-
-	/**
-	*	@brief	Basic collision check with another box.
-	*	@param	a_bb is the OBB or AABB that we are checking for possible collision with
-	*	@return	ENUM: DISJOINT, CONTAINS, INTERSECTS
-	*/
-	eContainmentType Collision(BoundingBoxNode a_bb);
-
-	/**
-	*	@brief Basic collision check with a point
-	*	@param	a_pt is the point we are checking for possible collision with
-	*	@return ENUM: DISJOINT, CONTAINS, INTERSECTS
-	*/
-	eContainmentType Collision(Vector4<float> a_pt);
-
-	/**
-	*	@brief	More detailed collision detection, checks each face plane for intersection
-	*	@param	a_bb is the OBB or AABB that we are checking more detailed collision with
-	*	@return	Direction normal of face we are colliding with
-	*	
-	*	WARNING: Expensive calculations
-	*/
-	Vector4<float> AdvancedIntersect(BoundingBoxNode a_bb);
 
 protected:
 	Vector4<float>						m_max;			/*Top right point*/

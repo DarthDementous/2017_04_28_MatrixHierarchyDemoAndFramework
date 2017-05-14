@@ -101,31 +101,31 @@ std::vector<Vector4<float>> BoundingBoxNode::CalculateFacePlanes()
 ///Basic collision code sourced from XNA Framework BoundingBox.cs:
 ///https://searchcode.com/file/8270413/MonoGame.Framework/BoundingBox.cs
 
-eContainmentType BoundingBoxNode::Collision(BoundingBoxNode a_bb)
+eContainmentType BoundingBoxNode::Collision(BoundingBoxNode *a_bb)
 {
 	// test if all the corners are on the same side of a face by just checking min and max
-	if (a_bb.m_max.x < m_min.x
-		|| a_bb.m_min.x > m_max.x
-		|| a_bb.m_max.y < m_min.y
-		|| a_bb.m_min.y > m_max.y
-		|| a_bb.m_max.z < m_min.z
-		|| a_bb.m_min.z > m_max.z)
+	if (a_bb->m_max.x < m_min.x
+		|| a_bb->m_min.x > m_max.x
+		|| a_bb->m_max.y < m_min.y
+		|| a_bb->m_min.y > m_max.y
+		|| a_bb->m_max.z < m_min.z
+		|| a_bb->m_min.z > m_max.z)
 		return DISJOINT;
 
 	// Check if this m_min and m_max encapsulates the bounding a_bb
-	if (a_bb.m_min.x >= m_min.x
-		&& a_bb.m_max.x <= m_max.x
-		&& a_bb.m_min.y >= m_min.y
-		&& a_bb.m_max.y <= m_max.y
-		&& a_bb.m_min.z >= m_min.z
-		&& a_bb.m_max.z <= m_max.z)
+	if (a_bb->m_min.x >= m_min.x
+		&& a_bb->m_max.x <= m_max.x
+		&& a_bb->m_min.y >= m_min.y
+		&& a_bb->m_max.y <= m_max.y
+		&& a_bb->m_min.z >= m_min.z
+		&& a_bb->m_max.z <= m_max.z)
 		return CONTAINS;
 
 	// Only possible outcome is intersection
 	return INTERSECTS;
 }
 
-eContainmentType BoundingBoxNode::Collision(Vector4<float> a_pt)
+eContainmentType BoundingBoxNode::Collision(const Vector4<float> &a_pt)
 {
 	//first we get if point is out of box
 	if (a_pt.x < m_min.x
@@ -148,10 +148,10 @@ eContainmentType BoundingBoxNode::Collision(Vector4<float> a_pt)
 		return CONTAINS;
 }
 
-Vector4<float> BoundingBoxNode::AdvancedIntersect(BoundingBoxNode a_bb)
+Vector4<float> BoundingBoxNode::AdvancedIntersect(BoundingBoxNode *a_bb)
 {
 	// Assume that min/max collision checks have already been performed and collision is inevitable
-	std::vector<Vector4<float>> normals = a_bb.CalculateFacePlanes();
+	std::vector<Vector4<float>> normals = a_bb->CalculateFacePlanes();
 
 	// Use point collision detection on each normal to check for collision (not disjoint)
 	for (Vector4<float> normal : normals) {
@@ -167,6 +167,10 @@ Vector4<float> BoundingBoxNode::AdvancedIntersect(BoundingBoxNode a_bb)
 
 void BoundingBoxNode::Update()
 {
+	// Mark max and min as points instead of vectors
+	m_max.w = 1;
+	m_min.w = 1;
+
 	// Transform min/max every frame (basic box collision level)
 	m_max = m_localTransform * m_max;
 	m_min = m_localTransform * m_min;

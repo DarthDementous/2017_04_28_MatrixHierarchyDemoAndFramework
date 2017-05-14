@@ -2,7 +2,6 @@
 #include <3DNodeFramework_Utility.h>
 #include <Input.h>
 
-
 CameraNode::~CameraNode() {
 	//Gizmos::destroy;
 }
@@ -36,29 +35,21 @@ void CameraNode::UpdateInput(aie::Input * a_input, const Vector2<int> &a_origina
 		m_cameraPitch = degToRad(tempAngle);         // Convert back to radians so its compatable with regular calculations
 	}
 #else
-	m_cameraYaw -= m_sensitivity * a_dt;
+	//m_cameraYaw -= m_sensitivity * a_dt;
+	//m_cameraPitch -= m_sensitivity * a_dt;
 #endif
 }
 
 void CameraNode::UpdateView(const Vector4<float> &a_target)
 {
-	// Update rotation
-	SetRotate(LOCAL, Vector4<float>(m_cameraPitch, m_cameraYaw, 0, 0));
+	// Update transformation matrix with rotations
+	m_localTransform = Matrix4<float>::createRotationX(m_cameraPitch) * Matrix4<float>::createRotationY(m_cameraYaw);
 
-	// Translate by offset
-	SetTranslate(LOCAL, m_reference);
-
-	// Determine new position of camera by transforming current translation with its Matrix
-	Vector4<float> cameraTransformedPosition = m_localTransform * m_localTransform.getTranslation();
-
-	// Add target position onto camera position
-	cameraTransformedPosition += a_target;
-
-	// Determine camera Up normal by transforming
-	Vector4<float> cameraUp = m_localTransform * UP_NORMAL;
+	// Get camera position by transforming the offset by the rotation
+	Vector4<float> cameraTransformedPosition = m_localTransform * m_reference;
 
 	// Construct the camera view matrix
-	m_viewMatrix = Matrix4<float>::createLookAt(cameraTransformedPosition, a_target, cameraUp);
+	m_viewMatrix = Matrix4<float>::createLookAt(cameraTransformedPosition, a_target, m_localTransform.Up());
 }
 
 Matrix4<float> CameraNode::GetObjectTransform()

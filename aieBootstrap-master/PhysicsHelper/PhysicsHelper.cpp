@@ -1,26 +1,29 @@
 #include <PhysicsHelper.h>
 #include <MathLib_Utility.h>
 
+#define	EPSILON 0.0001f			// What is considered absolute zero to avoid unecessary miniscule calculations
+
 PhysicsHelper::~PhysicsHelper() {}
 
 //Decay the player's velocity to simulate friction
 Vector4<float> PhysicsHelper::AddFriction(float friction, Vector4<float> velocity, float deltaTime)
 {
 	Vector4<float> newVelocity;
-	float currentSpeed = velocity.magnitude(); //Current length of the velocity vector
+	float currentSpeed = velocity.magnitude();		 //Current length of the velocity vector
 
 	float newSpeed;
-	float drop; //Decay factor (inertia)
-	float scale; //Ratio of change
+	float drop;										 //Decay factor (inertia)
+	float scale;									 //Ratio of change
 	
-	//Don't bother with friction if player speed is very low
-	if (currentSpeed > 1) {
+	// If speed is insignificant negate it completely to avoid unecessary calculations
+	if (currentSpeed > EPSILON) {
 		drop = currentSpeed * friction * deltaTime;  //Normalize drop with physics calculator
 		newSpeed = currentSpeed - drop;
-		scale = newSpeed / currentSpeed; //Rate of how much speed has gone down after drop affects it
-		newVelocity = velocity * scale; //Scale down velocity accordingly
+		scale = newSpeed / currentSpeed;			 //Rate of how much speed has gone down after drop affects it
+		newVelocity = velocity * scale;				 //Scale down velocity accordingly
 	}
 
+	// Return modified velocity or negated velocity
 	return newVelocity;
 }
 
@@ -58,8 +61,8 @@ Vector4<float> PhysicsHelper::ReflectVelocity(float reflect, Vector4<float> plan
 														  //Clip only returns float value, * planeNormal turns it into new vector
 														  //planeNormal = direction being pushed from
 
-	//Zero out the y axis to avoid small bounces if velocity is 10% of defaultHeight
-	if (newVelocity.y < 1.1f)
+	//Zero out the y axis to avoid small bounces
+	if (newVelocity.y < EPSILON)
 	{
 		newVelocity.y = 0.0f;
 	}

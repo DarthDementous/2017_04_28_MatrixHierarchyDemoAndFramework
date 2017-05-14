@@ -3,6 +3,7 @@
 #include <Vector2.h>
 #include <GLFW/glfw3.h>
 #include <Gizmos.h>
+#include <MathLib_Utility.h>
 
 namespace aie {
 	class Input;
@@ -56,8 +57,8 @@ public:
 
 	void Render() override;
 private:
-	float										m_cameraYaw		= 0.f;				/* Turning left and right on Y axis*/
-	float										m_cameraPitch	= 0.f;				/* Angling up and down on X axis*/
+	float										m_cameraYaw = 0.f;//_PIOVER2;			/* Turning left and right on Y axis*/
+	float										m_cameraPitch = 0.f;//-_PI / 10.f;		/* Angling up and down on X axis*/
 	float										m_sensitivity;						/* How fast the camera rotates*/
 	
 	Vector4<float>								m_reference;						/* How much the camera position is offset*/

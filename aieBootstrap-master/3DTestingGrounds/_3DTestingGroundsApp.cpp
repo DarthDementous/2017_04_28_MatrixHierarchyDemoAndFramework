@@ -7,6 +7,7 @@
 #include <CameraNode.h>
 #include <BoundingBoxNode.h>
 #include <PhysicsHelper.h>
+#include <iostream>
 
 using glm::vec3;
 using glm::vec4;
@@ -23,9 +24,8 @@ _3DTestingGroundsApp::~_3DTestingGroundsApp() {
 }
 
 bool _3DTestingGroundsApp::startup() {
-	//setBackgroundColour(0.25f, 0.25f, 0.25f);
-	setBackgroundColour(1.f, 0.07f, 0.57f);
-
+	setBackgroundColour(0.25f, 0.25f, 0.25f);
+	
 	Gizmos::create(1000, 1000, 1000, 1000);
 
 	// create simple camera transforms
@@ -51,9 +51,10 @@ bool _3DTestingGroundsApp::startup() {
 	for (auto i = 0; i < 10; i++) {
 		// Create building and translate it before moving it into the building vector
 		std::unique_ptr<BoundingBoxNode> m_bb = std::unique_ptr<BoundingBoxNode>(new BoundingBoxNode(BUILDING_EXTENTS, BUILDING_COLOR, Vector4<float>(0, 0, 0, 0)));
-		m_bb->Translate(WORLD, Vector4<float>(i * 10, 0, 0, 0));
+		m_bb->Translate(WORLD, Vector4<float>(100 * i, BUILDING_EXTENTS.y / 2, 0, 0));
 
 		buildings.push_back(std::move(m_bb));
+
 	}
 
 	///Mouse
@@ -71,7 +72,12 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 
 	Gizmos::clear();
 
-	m_camera->Update(getWindowPtr(), deltaTime, input, originalMouseState, Vector4<float>(0, 0, 0, 0));
+	// If player has been pushed 'underneath' by velocity then we reset their y coord
+	Vector4<float> playerPosition = m_player->GetPosition(WORLD);
+
+	if (playerPosition.y < 0) {
+		m_player->SetTranslate(WORLD, Vector4<float>(playerPosition.x, 0, playerPosition.z, 0));
+	}
 
 	// Hide the mouse cursor
 	glfwSetInputMode(getWindowPtr(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -79,42 +85,100 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 	// Center cursor so we base camera rotations off of projected mouse movement instead of actual movement that could leave the window and cause extreme rotations
 	glfwSetCursorPos(getWindowPtr(), originalMouseState.x, originalMouseState.y);
 
-	KeyboardInput(deltaTime);
+	// Only check keyboard input if there is any to save on calculations
+	if (input->getPressedKeys().empty()) {
+		KeyboardInput(deltaTime);
+	}
+
+	ApplyFriction(deltaTime);
 
 	ApplyGravity(deltaTime);
+
+	// Update player position with velocity
+	m_player->Translate(WORLD, playerVelocity);
+
+	// Calculate collisions after velocity has been applied
+	Collision();
+
+	// Update camera
+	m_camera->Update(getWindowPtr(), deltaTime, input, originalMouseState, m_player->GetPosition(WORLD));
 
 	// draw a simple grid with gizmos
 	vec4 white(1);
 	vec4 black(0, 0, 0, 1);
 	for (int i = 0; i < 21; ++i) {
-		Gizmos::addLine(vec3(-10 + i, 0, 10),
-						vec3(-10 + i, 0, -10),
+		Gizmos::addLine(vec3(-100 + i * 10, 0, 100),
+						vec3(-100 + i * 10, 0, -100),
 						i == 10 ? white : black);
-		Gizmos::addLine(vec3(10, 0, -10 + i),
-						vec3(-10, 0, -10 + i),
+		Gizmos::addLine(vec3(100, 0, -100 + i * 10),
+						vec3(-100, 0, -100 + i * 10),
 						i == 10 ? white : black);
 	}
 	// add default transform lines for world axis
-	Gizmos::addTransform(mat4(1));
+	Gizmos::addTransform(mat4(1), 25.f);
 
+	///Buildings
+	for (auto building : buildings) {
+		glm::vec3 center = glm::vec3(building->GetPosition(WORLD).x, building->GetPosition(WORLD).y, building->GetPosition(WORLD).z);
+		glm::vec3 extents = glm::vec3(BUILDING_EXTENTS.x, BUILDING_EXTENTS.y, BUILDING_EXTENTS.z);
+		glm::vec4 color = glm::vec4(BUILDING_COLOR.x, BUILDING_COLOR.y, BUILDING_COLOR.z, BUILDING_COLOR.w);
 
+		Gizmos::addAABB(center, extents, color); //&transformMatrixPtr.convertToOpenGL());
+	}
+
+	///Player
+	// Gizmos requires a pointer to the transformation matrix
+	//Matrix4<float> transformMatrixPtr = m_player->GetTransform(LOCAL);
+	glm::vec3 center = glm::vec3(m_player->GetPosition(WORLD).x, m_player->GetPosition(WORLD).y, m_player->GetPosition(WORLD).z);
+	glm::vec3 extents = glm::vec3(PLAYER_EXTENTS.x, PLAYER_EXTENTS.y, PLAYER_EXTENTS.z);
+	glm::vec4 color = glm::vec4(PLAYER_COLOR.x, PLAYER_COLOR.y, PLAYER_COLOR.z, PLAYER_COLOR.w);
+
+	Gizmos::addAABB(center, extents, color); //&transformMatrixPtr.convertToOpenGL());
 
 	// quit if we press escape
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 }
 
+
+void _3DTestingGroundsApp::ApplyFriction(float deltaTime) {
+	//Friction only applies on the ground
+	if (m_player->GetPosition(WORLD).y == 0)
+	{
+#ifdef _DEBUG
+		//std::cout << "CURRENT VELOCITY: " << playerVelocity.x << " " << playerVelocity.y << " " << playerVelocity.z << std::endl;
+		//std::cout << "CURRENT SPEED: " << playerVelocity.magnitude() << std::endl;
+#endif
+		playerVelocity = PhysicsHelper::AddFriction(DEFAULT_FRICTION, playerVelocity, deltaTime);
+	}
+}
+
+void _3DTestingGroundsApp::Collision()
+{
+	// Update player bounding box with transformations before checking it against other bounding boxes
+	m_player->Update();
+
+	for (auto building : buildings) {
+		/// Base level collision check
+		if (building->Collision(m_player.get()) == INTERSECTS) {
+			/// Advanced collision application, return normal we're intersecting with
+			playerVelocity = PhysicsHelper::ReflectVelocity(DEFAULT_RESTITUTION, building->AdvancedIntersect(m_player.get()), playerVelocity);
+		}
+	}
+}
+
 void _3DTestingGroundsApp::KeyboardInput(float deltaTime)
 {
 #if 1
 	aie::Input* input = aie::Input::getInstance();
+
 	Vector4<float> playerDirection;														/*Which direction to apply force to the player*/
 	Vector4<float> playerPosition = m_player->GetPosition(WORLD);						/*Player position in worldspace. NOTE: Must be updated after every transformation!*/
 	Matrix4<float> playerTransform = m_player->GetTransform(LOCAL);						/*Player transform matrix*/
 	float push = PLAYER_SPEED;															/*Amount of speed behind the force applied*/
 
 	//Movement speed reduced if in the air
-	if (playerPosition.z > 0)
+	if (playerPosition.y > 0)
 	{
 		push /= 10;
 	}
@@ -166,44 +230,14 @@ void _3DTestingGroundsApp::KeyboardInput(float deltaTime)
 	}
 
 	//Push the player in the specified direction
-	m_player->SetTranslate(WORLD, PhysicsHelper::AddForce(DEFAULT_MASS, push, playerDirection, DEFAULT_FORCE, playerPosition, deltaTime));
+	playerVelocity = PhysicsHelper::AddForce(DEFAULT_MASS, push, playerDirection, DEFAULT_FORCE, playerVelocity, deltaTime);
 #pragma endregion
-	
-	//Update position after possible transformation
-	playerPosition = m_player->GetPosition(WORLD);
-
-#pragma region Friction
-	//Friction only applies on the ground
-	if (playerPosition.z > 0)
-	{
-		m_player->SetTranslate(WORLD, PhysicsHelper::AddFriction(DEFAULT_FRICTION, playerPosition, deltaTime));
-	}
-#pragma endregion
-
-	//Update position after possible transformation
-	playerPosition = m_player->GetPosition(WORLD);
 
 #pragma region Jumping key input
 	//Player can only jump from the ground
-	if (input->isKeyDown(aie::INPUT_KEY_SPACE) && playerPosition.z == 0)
+	if (input->isKeyDown(aie::INPUT_KEY_SPACE) && playerPosition.y == 0)
 	{
-		m_player->SetTranslate(WORLD, PhysicsHelper::AddForce(DEFAULT_MASS, PLAYER_JUMP, DEFAULT_GROUND_NORMAL, DEFAULT_FORCE, playerPosition, deltaTime));
-	}
-
-	//Update position after possible transformation
-	playerPosition = m_player->GetPosition(WORLD);
-
-	//Player is still in the air or has just jumped
-	if (playerPosition.z > 0)
-	{
-		jumped = true;						//Flag the jump so restitution isn't applied immediately
-	}
-
-	//Player has touched down after a jump
-	if (playerPosition.z <= 0 && jumped == true) 
-	{
-		m_player->SetTranslate(WORLD, PhysicsHelper::ReflectVelocity(DEFAULT_RESTITUTION, DEFAULT_GROUND_NORMAL, playerPosition));		//Apply bounce
-		jumped = false;		//Jumping procedure has been completed
+		playerVelocity = PhysicsHelper::AddForce(DEFAULT_MASS, PLAYER_JUMP, DEFAULT_GROUND_NORMAL, DEFAULT_FORCE, playerVelocity, deltaTime);
 	}
 #pragma endregion
 
@@ -211,11 +245,22 @@ void _3DTestingGroundsApp::KeyboardInput(float deltaTime)
 }
 
 void _3DTestingGroundsApp::ApplyGravity(float deltaTime) {
-	// Constantly simulate gravity by applying force downwards to the player if they are in the air
-	Vector4<float> playerPosition = m_player->GetPosition(WORLD);						/*Player position in worldspace.*/
+	Vector4<float> playerPosition = m_player->GetPosition(WORLD);
 
-	if (playerPosition.z > 0) {
-		m_player->SetTranslate(WORLD, PhysicsHelper::AddForce(DEFAULT_MASS, DEFAULT_GRAVITY, DEFAULT_GRAVITY_NORMAL, DEFAULT_FORCE, playerPosition, deltaTime));
+	//Player is in the air or has just jumped
+	if (playerPosition.y > 0)
+	{
+		jumped = true;								//Flag the jump so restitution isn't applied immediately
+		// Constantly simulate gravity by applying force downwards to the player if they are in the air
+		playerVelocity = PhysicsHelper::AddForce(DEFAULT_MASS, DEFAULT_GRAVITY, DEFAULT_GRAVITY_NORMAL, DEFAULT_FORCE, playerVelocity, deltaTime);
+	}
+
+	//Player has touched down after a jump
+	if (playerPosition.y == 0 && jumped == true)
+	{
+		//Apply bounce
+		playerVelocity = PhysicsHelper::ReflectVelocity(DEFAULT_RESTITUTION, DEFAULT_GROUND_NORMAL, playerVelocity);
+		jumped = false;								//Jumping procedure has been completed
 	}
 }
 
@@ -286,5 +331,13 @@ void _3DTestingGroundsApp::draw() {
 	clearScreen();
 	// Draw gizmos transformed to the camera
 	//m_camera->Render();
+
 	Gizmos::draw(m_camera->GetObjectTransform().convertToOpenGL());			// Draw all Gizmos so they are transformed by the camera's viewport
+	// update perspective in case window resized
+	//glm::mat4 m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
+	//	getWindowWidth() / (float)getWindowHeight(),
+	//	0.1f, 1000.f);
+	//// create simple camera transforms
+	//glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(cameraReference.x, cameraReference.y, cameraReference.z), vec3(0), vec3(0, 1, 0));
+	//Gizmos::draw(m_projectionMatrix * m_viewMatrix);
 }

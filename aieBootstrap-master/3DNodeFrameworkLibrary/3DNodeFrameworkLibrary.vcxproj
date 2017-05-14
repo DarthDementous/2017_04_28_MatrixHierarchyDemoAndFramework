@@ -70,16 +70,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)dependencies\my_libs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\my_dlls\$(Configuration)\</OutDir>
     <IncludePath>$(SolutionDir)dependencies\glfw\include\;$(SolutionDir)dependencies\glm\;$(SolutionDir)bootstrap\;$(SolutionDir)dependencies\my_libs\Include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)dependencies\my_libs\$(Configuration)\;$(SolutionDir)temp\bootstrap\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)bin\my_dlls\$(Configuration)\;$(SolutionDir)temp\bootstrap\$(Configuration);$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)_d</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)dependencies\my_libs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\my_dlls\$(Configuration)\</OutDir>
     <IncludePath>$(SolutionDir)dependencies\glfw\include\;$(SolutionDir)dependencies\glm\;$(SolutionDir)bootstrap\;$(SolutionDir)dependencies\my_libs\Include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)dependencies\my_libs\$(Configuration)\;$(SolutionDir)temp\bootstrap\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)bin\my_dlls\$(Configuration)\;$(SolutionDir)temp\bootstrap\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
