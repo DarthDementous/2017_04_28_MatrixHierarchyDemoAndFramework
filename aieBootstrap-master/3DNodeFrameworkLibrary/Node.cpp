@@ -29,7 +29,7 @@ void Node::Render()
 
 #pragma region Family functions
 
-void Node::AttachParent(Node * a_parent)
+void Node::AttachParent(Node* a_parent)
 {
 	// Child accepts change in relationship
 	m_parent = a_parent;
@@ -37,7 +37,7 @@ void Node::AttachParent(Node * a_parent)
 	a_parent->m_children.push_back(this);
 }
 
-void Node::Adopt(Node * a_child)
+void Node::Adopt(Node* a_child)
 {
 	// Child accepts change in relationship
 	a_child->AttachParent(this);
@@ -118,6 +118,7 @@ void Node::Translate(eCoordType a_coordType, const Vector4<float>& a_pos)
 	if (a_coordType == LOCAL || m_parent == nullptr) {
 		// *= operator so we add on the translation instead of setting it
 		m_localTransform *= Matrix4<float>::createTranslation(a_pos.x, a_pos.y, a_pos.z);
+		return;
 	}
 
 	// De-couple with parent by negating the parent transformation
@@ -130,6 +131,7 @@ void Node::SetRotate(eCoordType a_coordType, const Vector4<float>& a_rot)
 	if (a_coordType == LOCAL || m_parent == nullptr) {
 		// We want to replace only the rotation parts
 		m_localTransform.setRotateX(a_rot.x), m_localTransform.setRotateY(a_rot.y), m_localTransform.setRotateZ(a_rot.z);
+		return;
 	}
 
 	// De-couple with parent by negating the parent transformation
@@ -145,6 +147,7 @@ void Node::Rotate(eCoordType a_coordType, const Vector4<float>& a_rot)
 			Matrix4<float>::createRotationX(a_rot.x) * 
 			Matrix4<float>::createRotationY(a_rot.y) * 
 			Matrix4<float>::createRotationZ(a_rot.z);
+		return;
 	}
 
 	// De-couple with parent by negating the parent transformation
@@ -159,6 +162,7 @@ void Node::SetScale(eCoordType a_coordType, const Vector4<float>& a_scale)
 {
 	if (a_coordType == LOCAL || m_parent == nullptr) {
 		m_localTransform = Matrix4<float>::createScale(a_scale.x, a_scale.y, a_scale.z);
+		return;
 	}
 
 	// De-couple with parent by negating the parent transformation
@@ -171,6 +175,7 @@ void Node::Scale(eCoordType a_coordType, Vector3<float> a_scale)
 	if (a_coordType == LOCAL || m_parent == nullptr) {
 		// *= operator so we add on to the scale instead of setting it
 		m_localTransform *= Matrix4<float>::createScale(a_scale.x, a_scale.y, a_scale.z);
+		return;
 	}
 
 	// De-couple with parent by negating the parent transformation

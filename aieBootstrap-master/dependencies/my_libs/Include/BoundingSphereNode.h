@@ -1,7 +1,7 @@
 #pragma once
 #include <GizmoNode.h>
 
-class BoundingSphereNode :
+class NODE_LIBRARY_API BoundingSphereNode :
 	public GizmoNode
 {
 public:

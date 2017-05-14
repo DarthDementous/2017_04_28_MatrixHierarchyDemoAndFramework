@@ -67,10 +67,10 @@ Matrix4<float> CameraNode::GetObjectTransform()
 	return m_projectionMatrix * m_viewMatrix;
 }
 
-void CameraNode::Update(GLFWwindow* a_window, float a_dt, aie::Input* a_input, Vector2<int> a_originalMouseState, Vector4<float> a_target)
+void CameraNode::Update(GLFWwindow* a_window, float a_dt, aie::Input* a_input, const Vector2<int> &a_originalMouseState, const Vector4<float> &a_target)
 {
 	// wipe the gizmos clean for this frame
-	Gizmos::clear();
+	//Gizmos::clear();
 
 	// Update with mouse input
 	UpdateInput(a_input, a_originalMouseState, a_dt);
@@ -89,5 +89,13 @@ void CameraNode::Render() {
 	/* Since Gizmos are a singleton class there's only one instance that's drawn as a batch.
 	With this draw function we simulate a Matrix Hierarchy, that is the Gizmos are 'children' of the grandparent class - CameraNode.
 	*/
+	
+	//Render all children first (if it has any)
+	if (!m_children.empty()) {
+		for (Node* child : m_children) {
+			child->Render();
+		}
+	}
+
 	Gizmos::draw(GetObjectTransform().convertToOpenGL());			// Draw all Gizmos so they are transformed by the camera's viewport
 }

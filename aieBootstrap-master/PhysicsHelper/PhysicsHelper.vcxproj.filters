@@ -23,5 +23,8 @@
     <ClInclude Include="..\dependencies\my_libs\Include\PhysicsHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\dependencies\my_libs\Include\PhysicsHelper_DLL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

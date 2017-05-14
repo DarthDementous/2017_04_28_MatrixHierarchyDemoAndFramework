@@ -1,18 +1,10 @@
 #include "BoundingBoxNode.h"
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
-#include <memory>
 #include <MathLib_Utility.h>
 
 BoundingBoxNode::~BoundingBoxNode()
 {
-}
-
-void BoundingBoxNode::Update()
-{
-	// Transform min/max every frame (basic box collision level)
-	m_max = m_localTransform * m_max;
-	m_min = m_localTransform * m_min;
 }
 
 void BoundingBoxNode::CalculateExtents()
@@ -59,12 +51,9 @@ std::vector<Vector4<float>> BoundingBoxNode::CalculateVertices()
 #ifdef _DEBUG
 	for (Vector4<float> vertex : vertices) {
 		// Gizmos requires a pointer to the transformation matrix
-		glm::mat4x4 *transformMatrixPtr = new glm::mat4x4(Matrix4<float>::createTranslation(vertex.x, vertex.y, vertex.z).convertToOpenGL());
+		glm::mat4x4 transformMatrixPtr = glm::mat4x4(Matrix4<float>::createTranslation(vertex.x, vertex.y, vertex.z).convertToOpenGL());
 
-		Gizmos::addSphere(DEFAULT_ORIGIN3D, VERTEX_RADIUS, VERTEX_SUBDIVISIONS, VERTEX_SUBDIVISIONS, VERTEX_COLOR, transformMatrixPtr);
-
-		// Clean up dynamically allocated memory
-		delete transformMatrixPtr;
+		Gizmos::addSphere(DEFAULT_ORIGIN3D, VERTEX_RADIUS, VERTEX_SUBDIVISIONS, VERTEX_SUBDIVISIONS, VERTEX_COLOR, &transformMatrixPtr);
 	}
 #endif
 
@@ -99,12 +88,9 @@ std::vector<Vector4<float>> BoundingBoxNode::CalculateFacePlanes()
 #ifdef _DEBUG
 	for (Vector4<float> planePos : faceNormals) {
 		// Gizmos requires a pointer to the transformation matrix
-		glm::mat4x4 *transformMatrixPtr = new glm::mat4x4(Matrix4<float>::createTranslation(planePos.x, planePos.y, planePos.z).convertToOpenGL());
+		glm::mat4x4 transformMatrixPtr = glm::mat4x4(Matrix4<float>::createTranslation(planePos.x, planePos.y, planePos.z).convertToOpenGL());
 
-		Gizmos::add2DAABB(DEFAULT_ORIGIN2D, glm::vec2(m_extents.x, m_extents.y), PLANE_COLOR, transformMatrixPtr);
-
-		// Clean up dynamically allocated memory
-		delete transformMatrixPtr;
+		Gizmos::add2DAABB(DEFAULT_ORIGIN2D, glm::vec2(m_extents.x, m_extents.y), PLANE_COLOR, &transformMatrixPtr);
 	}
 #endif
 
@@ -177,4 +163,26 @@ Vector4<float> BoundingBoxNode::AdvancedIntersect(BoundingBoxNode a_bb)
 	}
 
 	return Vector4<float>(0, 0, 0, 0);			// All code-paths must return a value, if this function is used only when a collision is certain this will never be returned.
+}
+
+void BoundingBoxNode::Update()
+{
+	// Transform min/max every frame (basic box collision level)
+	m_max = m_localTransform * m_max;
+	m_min = m_localTransform * m_min;
+}
+
+void BoundingBoxNode::Render()
+{
+#ifdef _DEBUG
+	/// Do conversions to openGL to use Gizmos
+	// Gizmos requires a pointer to the transformation matrix
+	glm::mat4x4 transformMatrixPtr = glm::mat4x4(m_localTransform.convertToOpenGL());
+	glm::vec3 center = glm::vec3(m_origin.x, m_origin.y, m_origin.z);
+	glm::vec3 extents = glm::vec3(m_extents.x, m_extents.y, m_extents.z);
+	glm::vec4 color = glm::vec4(m_color.x, m_color.y, m_color.z, m_color.w);
+
+	Gizmos::addAABB(center, extents, color, &transformMatrixPtr);
+#endif
+
 }

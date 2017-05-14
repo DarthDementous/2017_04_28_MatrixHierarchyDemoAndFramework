@@ -2,7 +2,7 @@
 #include <GizmoNode.h>
 #include <3DNodeFramework_Utility.h>
 
-class BoundingBoxNode :
+class NODE_LIBRARY_API BoundingBoxNode :
 	public GizmoNode
 {
 public:
@@ -22,6 +22,8 @@ public:
 	/**
 	*	@brief	Oriented Bounding Box comprised of planes (2d bounding boxes) made from extents (width, height, depth)
 	*	@param	a_extents is the dimensions of the OBB
+	*	@param	a_color is the RGBA value to draw object with
+	*	@param	a_origin is the anchor point of the object (to be used as centre parameter for gizmo)
 	*/
 	BoundingBoxNode(Vector4<float> a_extents, Vector4<float> a_color, Vector4<float> a_origin) : m_extents(a_extents) {
 		CalculateMinMax();
@@ -32,6 +34,8 @@ public:
 	~BoundingBoxNode();
 
 	void Update();
+
+	void Render();
 private:
 	/**
 	*	@brief	Using the min and max, calculate the width, height and depth

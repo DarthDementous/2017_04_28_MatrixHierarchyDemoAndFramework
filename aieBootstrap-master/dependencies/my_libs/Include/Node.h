@@ -29,6 +29,7 @@
 #include <vector>
 #include <3DNodeFramework_Utility.h>
 #include <NodeFramework_DLL.h>
+#include <memory>
 
 /**
 *	@brief	Base-class that provides basic functionality for a Matrix Hierarchy system.
@@ -54,7 +55,7 @@ public:
 	/**
 	*	@brief	Couple child node to this.
 	*/
-	void Adopt(Node *a_child);
+	void Adopt(Node* a_child);
 
 	/**
 	*	@brief	De-couple the parent node from this.
@@ -120,7 +121,7 @@ public:
 	void SetLocalMatrix(Matrix4<float> &a_localTransform) { m_localTransform = a_localTransform; }
 #pragma endregion
 protected:
-	Matrix4<float>			m_localTransform;	/*Local transformation matrix*/
-	std::vector<Node*>		m_children;
-	Node*					m_parent = nullptr;
+	Matrix4<float>												m_localTransform;		/*Local transformation matrix*/
+	Node*														m_parent = nullptr;	    /*Pointer to current parent*/
+	std::vector<Node*>											m_children;				/*List of pointers to children*/
 };

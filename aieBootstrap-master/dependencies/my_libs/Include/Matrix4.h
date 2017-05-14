@@ -89,6 +89,16 @@ public:
 	glm::mat4x4 convertToOpenGL();   // Allow math's library structures to be used in Bootstrap functions
 
 	Matrix4& convertFromOpenGL(glm::mat4x4& a_mat);
+
+	/// Get directions
+	Vector4<T> Up()					{ return Vector4<T>(m21, m22, m23, 0); }		// Positive Y axis
+	Vector4<T> Down()				{ return Vector4<T>(-m21, -m22, -m23, 0); }     // Negative Y axis
+
+	Vector4<T> Forward()			{ return Vector4<T>(-m31, -m32, -m33, 0); }		// Negative Z axis
+	Vector4<T> Backward()			{ return Vector4<T>(m31, m32, m33, 0); }		// Positive Z axis
+
+	Vector4<T> Left()				{ return Vector4<T>(-m11, -m12, -m13, 0); }		// Negative X axis
+	Vector4<T> Right()				{ return Vector4<T>(m11, m12, m13, 0); }		// Positive X axis
 #pragma endregion
 	//Casts matrix to pointer of type T
 	explicit operator T* ();                   //Return start of matrix memory address
