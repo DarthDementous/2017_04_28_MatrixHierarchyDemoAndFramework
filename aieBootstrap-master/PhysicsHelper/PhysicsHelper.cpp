@@ -62,10 +62,11 @@ Vector4<float> PhysicsHelper::ReflectVelocity(float reflect, Vector4<float> plan
 														  //planeNormal = direction being pushed from
 
 	//Zero out the y axis to avoid small bounces
-	if (newVelocity.y < EPSILON)
+	if (newVelocity.y < 1)
 	{
 		newVelocity.y = 0.0f;
 	}
 
 	return newVelocity;
+
 }

@@ -9,7 +9,7 @@
 #include <vector>
 #include <memory>
 
-#define PLAYER_SPEED			5.f
+#define PLAYER_SPEED			50.f
 #define PLAYER_JUMP				500.f
 #define PLAYER_EXTENTS			Vector4<float>(20.f, 20.f, 20.f, 0.f)
 #define PLAYER_COLOR			Vector4<float>(0.f, 0.f, 1.f, 1.f)
@@ -20,10 +20,10 @@
 #define	EPSILON 0.0001f			// What is considered absolute zero to avoid unecessary miniscule calculations
 #define	DEFAULT_MASS			10.f		// Global mass
 #define	DEFAULT_FORCE			10.f		// Base physical force multiplier
-#define DEFAULT_FRICTION		4.f			// Global friction
-#define DEFAULT_GRAVITY			1.f		// Global gravity
+#define DEFAULT_FRICTION		9.8f			// Global friction
+#define DEFAULT_GRAVITY			9.8f		// Global gravity
 #define DEFAULT_GRAVITY_NORMAL  Vector4<float>(0, -1, 0, 0)
-#define	DEFAULT_RESTITUTION		0.9f		// Global bounce on unit variables (1.0 = bounce forever with collisions)
+#define	DEFAULT_RESTITUTION		.99f		// Global bounce on unit variables (1.0 = bounce forever with collisions)
 #define DEFAULT_GROUND_NORMAL	Vector4<float>(0, 1, 0, 0)
 
 // Forward declare to avoid circular inclusions

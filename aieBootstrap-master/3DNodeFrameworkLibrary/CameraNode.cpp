@@ -48,6 +48,9 @@ void CameraNode::UpdateView(const Vector4<float> &a_target)
 	// Get camera position by transforming the offset by the rotation
 	Vector4<float> cameraTransformedPosition = m_localTransform * m_reference;
 
+	// Add target position on to camera position
+	cameraTransformedPosition += a_target;
+
 	// Construct the camera view matrix
 	m_viewMatrix = Matrix4<float>::createLookAt(cameraTransformedPosition, a_target, m_localTransform.Up());
 }
@@ -61,7 +64,7 @@ Matrix4<float> CameraNode::GetObjectTransform()
 void CameraNode::Update(GLFWwindow* a_window, float a_dt, aie::Input* a_input, const Vector2<int> &a_originalMouseState, const Vector4<float> &a_target)
 {
 	// wipe the gizmos clean for this frame
-	//Gizmos::clear();
+	Gizmos::clear();
 
 	// Update with mouse input
 	UpdateInput(a_input, a_originalMouseState, a_dt);

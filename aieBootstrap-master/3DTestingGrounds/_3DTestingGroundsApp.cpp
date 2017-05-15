@@ -39,7 +39,7 @@ bool _3DTestingGroundsApp::startup() {
 	///Camera
 	// Create unique pointer and then put information into it
 	cameraProjectionMatrix = std::unique_ptr<Matrix4<float>>(new Matrix4<float>);
-	cameraProjectionMatrix->convertFromOpenGL(glm::perspectiveFov(degToRad(45.f), (float)getWindowWidth(), (float)getWindowHeight(), 1.f, 1000.f));
+	cameraProjectionMatrix->convertFromOpenGL(glm::perspectiveFov(degToRad(45.f), (float)getWindowWidth(), (float)getWindowHeight(), 1.f, 10000.f));
 
 	// Give the camera a perspective lens (frustum to cuboid)
 	m_camera = std::unique_ptr<CameraNode>(new CameraNode(cameraRotSpeed, cameraProjectionMatrix.get(), cameraReference));
@@ -94,6 +94,11 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 
 	ApplyGravity(deltaTime);
 
+#ifdef _DEBUG
+	//std::cout << "CURRENT VELOCITY: " << playerVelocity.x << " " << playerVelocity.y << " " << playerVelocity.z << std::endl;
+	std::cout << "CURRENT SPEED: " << playerVelocity.magnitude() << std::endl;
+#endif
+
 	// Update player position with velocity
 	m_player->Translate(WORLD, playerVelocity);
 
@@ -145,10 +150,6 @@ void _3DTestingGroundsApp::ApplyFriction(float deltaTime) {
 	//Friction only applies on the ground
 	if (m_player->GetPosition(WORLD).y == 0)
 	{
-#ifdef _DEBUG
-		//std::cout << "CURRENT VELOCITY: " << playerVelocity.x << " " << playerVelocity.y << " " << playerVelocity.z << std::endl;
-		//std::cout << "CURRENT SPEED: " << playerVelocity.magnitude() << std::endl;
-#endif
 		playerVelocity = PhysicsHelper::AddFriction(DEFAULT_FRICTION, playerVelocity, deltaTime);
 	}
 }
