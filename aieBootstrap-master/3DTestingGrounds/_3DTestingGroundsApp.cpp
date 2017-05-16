@@ -24,8 +24,10 @@ _3DTestingGroundsApp::~_3DTestingGroundsApp() {
 }
 
 bool _3DTestingGroundsApp::startup() {
-	setBackgroundColour(0.25f, 0.25f, 0.25f);
-	
+	//setBackgroundColour(0.25f, 0.25f, 0.25f);
+	setBackgroundColour(1.0f, 0.41f, 0.71f);
+
+
 	Gizmos::create(1000, 1000, 1000, 1000);
 
 	// create simple camera transforms
@@ -46,7 +48,9 @@ bool _3DTestingGroundsApp::startup() {
 
 	///Player
 	m_player = std::unique_ptr<BoundingBoxNode>(new BoundingBoxNode(PLAYER_EXTENTS, PLAYER_COLOR, Vector4<float>(0, 0, 0, 0)));
+	// Parent it to the camera so it inherits its transformations
 
+#if 0
 	///'Buildings'
 	for (auto i = 0; i < 10; i++) {
 		// Create building and translate it before moving it into the building vector
@@ -57,9 +61,9 @@ bool _3DTestingGroundsApp::startup() {
 
 	}
 
+#endif
 	///Mouse
 	originalMouseState = Vector2<int>((int)getWindowWidth() / 2, (int)getWindowHeight() / 2);
-
 	return true;
 }
 
@@ -71,7 +75,13 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 	aie::Input* input = aie::Input::getInstance();
 
 	Gizmos::clear();
+	
+	// Hide the mouse cursor
+	glfwSetInputMode(getWindowPtr(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
+	// Center cursor so we base camera rotations off of projected mouse movement instead of actual movement that could leave the window and cause extreme rotations
+	glfwSetCursorPos(getWindowPtr(), originalMouseState.x, originalMouseState.y);
+#if 1
 	// If player has been pushed 'underneath' by velocity then we reset their y coord
 	Vector4<float> playerPosition = m_player->GetPosition(WORLD);
 
@@ -79,11 +89,6 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 		m_player->SetTranslate(WORLD, Vector4<float>(playerPosition.x, 0, playerPosition.z, 0));
 	}
 
-	// Hide the mouse cursor
-	glfwSetInputMode(getWindowPtr(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-	// Center cursor so we base camera rotations off of projected mouse movement instead of actual movement that could leave the window and cause extreme rotations
-	glfwSetCursorPos(getWindowPtr(), originalMouseState.x, originalMouseState.y);
 
 	// Only check keyboard input if there is any to save on calculations
 	if (input->getPressedKeys().empty()) {
@@ -104,7 +109,7 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 
 	// Calculate collisions after velocity has been applied
 	Collision();
-
+#endif
 	// Update camera
 	m_camera->Update(getWindowPtr(), deltaTime, input, originalMouseState, m_player->GetPosition(WORLD));
 
@@ -122,24 +127,28 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 	// add default transform lines for world axis
 	Gizmos::addTransform(mat4(1), 25.f);
 
+
+	///Player
+	// Gizmos requires a pointer to the transformation matri
+	playerPosition = m_player->GetPosition(WORLD);
+	glm::vec4 transformMatrixPtr;
+	glm::vec3 center = glm::vec3(playerPosition.x, playerPosition.y, playerPosition.z);
+	glm::vec3 extents = glm::vec3(PLAYER_EXTENTS.x, PLAYER_EXTENTS.y, PLAYER_EXTENTS.z);
+	glm::vec4 color = glm::vec4(PLAYER_COLOR.x, PLAYER_COLOR.y, PLAYER_COLOR.z, PLAYER_COLOR.w);
+
+	Gizmos::addAABB(center, extents, color, &transformMatrixPtr.convertToOpenGL());
+#if 0
 	///Buildings
 	for (auto building : buildings) {
-		glm::vec3 center = glm::vec3(building->GetPosition(WORLD).x, building->GetPosition(WORLD).y, building->GetPosition(WORLD).z);
+		glm::vec3 center = glm::vec3(building->GetPosition(WORLD).x, building->GetPosition(WORLD).y, building->GetPosition(WORLD).z);je
 		glm::vec3 extents = glm::vec3(BUILDING_EXTENTS.x, BUILDING_EXTENTS.y, BUILDING_EXTENTS.z);
 		glm::vec4 color = glm::vec4(BUILDING_COLOR.x, BUILDING_COLOR.y, BUILDING_COLOR.z, BUILDING_COLOR.w);
 
 		Gizmos::addAABB(center, extents, color); //&transformMatrixPtr.convertToOpenGL());
 	}
 
-	///Player
-	// Gizmos requires a pointer to the transformation matrix
-	//Matrix4<float> transformMatrixPtr = m_player->GetTransform(LOCAL);
-	glm::vec3 center = glm::vec3(m_player->GetPosition(WORLD).x, m_player->GetPosition(WORLD).y, m_player->GetPosition(WORLD).z);
-	glm::vec3 extents = glm::vec3(PLAYER_EXTENTS.x, PLAYER_EXTENTS.y, PLAYER_EXTENTS.z);
-	glm::vec4 color = glm::vec4(PLAYER_COLOR.x, PLAYER_COLOR.y, PLAYER_COLOR.z, PLAYER_COLOR.w);
 
-	Gizmos::addAABB(center, extents, color); //&transformMatrixPtr.convertToOpenGL());
-
+#endif
 	// quit if we press escape
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
@@ -339,6 +348,7 @@ void _3DTestingGroundsApp::draw() {
 	//	getWindowWidth() / (float)getWindowHeight(),
 	//	0.1f, 1000.f);
 	//// create simple camera transforms
+
 	//glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(cameraReference.x, cameraReference.y, cameraReference.z), vec3(0), vec3(0, 1, 0));
 	//Gizmos::draw(m_projectionMatrix * m_viewMatrix);
 }

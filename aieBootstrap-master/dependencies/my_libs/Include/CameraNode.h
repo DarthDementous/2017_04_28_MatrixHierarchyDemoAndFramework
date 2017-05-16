@@ -53,6 +53,11 @@ public:
 	*/
 	Matrix4<float> GetObjectTransform();
 	
+	/*
+	*	@brief	Return camera pitch and camera yaw	
+	*/
+	Vector2<float> GetCameraRotation() { return Vector2<float>(m_cameraPitch, m_cameraYaw); }
+
 	void Update(GLFWwindow* a_window, float a_dt, aie::Input* a_input, const Vector2<int> &a_originalMouseState, const Vector4<float> &a_target);
 
 	void Render() override;
