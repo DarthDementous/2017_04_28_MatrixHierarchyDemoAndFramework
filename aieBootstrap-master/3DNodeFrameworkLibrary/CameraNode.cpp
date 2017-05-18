@@ -1,6 +1,7 @@
 #include "CameraNode.h"
 #include <3DNodeFramework_Utility.h>
 #include <Input.h>
+#include <iostream>
 
 CameraNode::~CameraNode() {
 	//Gizmos::destroy;
@@ -42,17 +43,25 @@ void CameraNode::UpdateInput(aie::Input * a_input, const Vector2<int> &a_origina
 
 void CameraNode::UpdateView(const Vector4<float> &a_target)
 {
-	// Update transformation matrix with rotations
-	m_localTransform = Matrix4<float>::createRotationY(m_cameraYaw) * Matrix4<float>::createRotationX(m_cameraPitch);
+	// Create new matrix, apply transformations and translations and then replace the current one
+	Matrix4<float> newTransformMatrix;
+	newTransformMatrix.setTranslate(m_localTransform.getTranslation().x, m_localTransform.getTranslation().y, m_localTransform.getTranslation().z);
+	// Create a point out of target but don't let it be translated! (we're already using the camera's current position)
+	Vector4<float> targetPt = Vector4<float>(a_target.x, a_target.y, a_target.z, 0);
 
-	// Get camera position by transforming the offset by the rotation
-	Vector4<float> cameraTransformedPosition = m_localTransform * m_reference;
+	// ROTATE the new matrix with the new rotations from mouse input
+	newTransformMatrix = Matrix4<float>::createRotationX(m_cameraPitch) * Matrix4<float>::createRotationY(m_cameraYaw);
 
-	// Add target position on to camera position
-	cameraTransformedPosition += a_target;
+	// TRANSLATE the new matrix by transforming the 
+	Vector4<float> cameraTransformedPosition = (newTransformMatrix * targetPt) + m_offset;
 
-	// Construct the camera view matrix
+	// Construct the camera view matrix out of camera position, target and transformed up vector
 	m_viewMatrix = Matrix4<float>::createLookAt(cameraTransformedPosition, a_target, m_localTransform.Up());
+
+#ifdef _DEBUG
+	std::cout << "CAMERA VIEW UPDATED WITH NEW CAMERA POSITION OF: "
+		<< cameraTransformedPosition.x << " " << cameraTransformedPosition.y << " " << cameraTransformedPosition.w << std::endl;
+#endif
 }
 
 Matrix4<float> CameraNode::GetObjectTransform()

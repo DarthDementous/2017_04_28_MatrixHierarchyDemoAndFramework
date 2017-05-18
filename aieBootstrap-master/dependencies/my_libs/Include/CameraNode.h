@@ -25,8 +25,8 @@ public:
 	*	@param	a_projectionMatrix is the Matrix that dictates the camera's perspective
 	*	@param	a_reference is the off-set camera position (default = 1st person)
 	*/
-	CameraNode(float a_sensitivity, const Matrix4<float> *a_projectionMatrix, const Vector4<float> &a_reference = Vector4<float>(0, 0, 0, 0)) : 
-		m_sensitivity(a_sensitivity), m_projectionMatrix(*a_projectionMatrix), m_reference(a_reference) {
+	CameraNode(float a_sensitivity, const Matrix4<float> *a_projectionMatrix, const Vector4<float> &a_reference = Vector4<float>(0, 0, 0, 1)) : 
+		m_sensitivity(a_sensitivity), m_projectionMatrix(*a_projectionMatrix), m_offset(a_reference) {
 		// initialise gizmo primitive counts
 		//Gizmos::create(10000, 10000, 10000, 10000);
 	}
@@ -66,7 +66,7 @@ private:
 	float										m_cameraPitch = 0.f;//-_PI / 10.f;		/* Angling up and down on X axis*/
 	float										m_sensitivity;						/* How fast the camera rotates*/
 	
-	Vector4<float>								m_reference;						/* How much the camera position is offset*/
+	Vector4<float>								m_offset;						/* How much the camera position is offset*/
 
 	Matrix4<float>								m_projectionMatrix;					/* What 'lens' the camera has*/
 	Matrix4<float>								m_viewMatrix;						/* Where the camera is and what it's facing at*/

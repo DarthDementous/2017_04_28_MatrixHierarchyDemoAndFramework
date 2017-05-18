@@ -101,7 +101,7 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 
 #ifdef _DEBUG
 	//std::cout << "CURRENT VELOCITY: " << playerVelocity.x << " " << playerVelocity.y << " " << playerVelocity.z << std::endl;
-	std::cout << "CURRENT SPEED: " << playerVelocity.magnitude() << std::endl;
+	//std::cout << "CURRENT SPEED: " << playerVelocity.magnitude() << std::endl;
 #endif
 
 	// Update player position with velocity
@@ -128,15 +128,20 @@ void _3DTestingGroundsApp::update(float deltaTime) {
 	Gizmos::addTransform(mat4(1), 25.f);
 
 
-	///Player
-	// Gizmos requires a pointer to the transformation matri
+	///Player (Gizmos requires a pointer to the transformation matrix)
+	// Get new position
 	playerPosition = m_player->GetPosition(WORLD);
-	glm::vec4 transformMatrixPtr;
+	
+	// Get new rotation by reversing camera rotation
+	Vector3<float> playerRotation = Vector3<float>(-(m_camera->GetCameraRotation().x), -(m_camera->GetCameraRotation().y), 0);
+	Matrix4<float> transformMatrix = Matrix4<float>::createRotationX(playerRotation.x) * Matrix4<float>::createRotationY(playerRotation.y);
+
+	// Apply new position and dimensions
 	glm::vec3 center = glm::vec3(playerPosition.x, playerPosition.y, playerPosition.z);
 	glm::vec3 extents = glm::vec3(PLAYER_EXTENTS.x, PLAYER_EXTENTS.y, PLAYER_EXTENTS.z);
 	glm::vec4 color = glm::vec4(PLAYER_COLOR.x, PLAYER_COLOR.y, PLAYER_COLOR.z, PLAYER_COLOR.w);
 
-	Gizmos::addAABB(center, extents, color, &transformMatrixPtr.convertToOpenGL());
+	//Gizmos::addAABB(center, extents, color, &transformMatrix.convertToOpenGL());
 #if 0
 	///Buildings
 	for (auto building : buildings) {
